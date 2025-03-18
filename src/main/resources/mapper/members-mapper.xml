@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Members">
+
+
+    <select id="getAllMembers" resultType="membersDTO">
+        select *
+        from members
+    </select>
+
+    <select id="getById" parameterType="String" resultType="membersDTO">
+        select *
+        from members
+        where id=#{username}
+    </select>
+
+    <select id="getMemberIndexById" parameterType="String" resultType="Integer">
+        select member_index
+        from members
+        where id=#{username}
+    </select>
+
+    <insert id="signUp" parameterType="membersDTO">
+        insert into members (
+            id,
+            password,
+            name,
+            email,
+            role,
+            job_status
+        ) values (
+                     #{id},
+                     #{password},
+                     #{name},
+                     #{email},
+                     #{role},
+                     #{job_status}
+                 )
+    </insert>
+
+<!--    <insert id="makeNews" parameterType="newsDTO">-->
+<!--        insert into news (-->
+<!--            member_index,-->
+<!--            title,-->
+<!--            content,-->
+<!--            category,-->
+<!--            tags-->
+<!--        ) values (-->
+<!--                     #{member_index},-->
+<!--                     #{title},-->
+<!--                     #{content},-->
+<!--                     #{category},-->
+<!--                     #{tags}-->
+<!--                 )-->
+<!--    </insert>-->
+<!--    <delete id="deleteNews" parameterType="map">-->
+<!--        delete-->
+<!--        from news-->
+<!--        where news_index = #{news_index}-->
+<!--    </delete>-->
+<!--    <update id="updateNews" parameterType="newsDTO">-->
+<!--        update news-->
+<!--        set-->
+<!--            title = case when #{title} is not null then #{title} else title end,-->
+<!--            content = case when #{content} is not null then #{content} else content end,-->
+<!--            category = case when #{category} is not null then #{category} else category end,-->
+<!--            tags = case when #{tags} is not null then #{tags} else tags end-->
+<!--        where-->
+<!--            news_index = #{news_index}-->
+<!--    </update>-->
+
+</mapper>
