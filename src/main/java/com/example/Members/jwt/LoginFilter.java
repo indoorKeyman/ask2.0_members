@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -81,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //응답 설정
         response.setHeader("Access-Control-Expose-Headers", "access");
         response.setHeader("access", access);
-        response.addCookie(createCookie("refresh", refresh));
+        response.addHeader("Cookie", createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 
@@ -93,24 +94,36 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-    private Cookie createCookie(String key, String value) {
+//    private Cookie createCookie(String key, String value) {
+//
+//        Cookie cookie = new Cookie(key, value);
+////        cookie.setMaxAge(24*60*60);
+////        //cookie.setSecure(true);
+////        cookie.setPath("/");
+////        cookie.setHttpOnly(true);
+////        cookie.setDomain("localhost");
+//
+//        cookie.setMaxAge(24 * 60 * 60); // 1일 (초 단위)
+//        cookie.setPath("/"); // 모든 경로에서 사용 가능
+//        cookie.setHttpOnly(true); // 클라이언트에서 JS로 접근 불가
+//        cookie.setSecure(false); // HTTPS 환경에서는 true로 설정 (배포 시 true)
+//        cookie.setAttribute("SameSite", "None"); // CORS 허용
+//
+//        return cookie;
+//
+//
+//    }
 
-        Cookie cookie = new Cookie(key, value);
-//        cookie.setMaxAge(24*60*60);
-//        //cookie.setSecure(true);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//        cookie.setDomain("localhost");
+    private String createCookie(String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("None")
+                .path("/")
+                .maxAge(24 * 60 * 60)
+                .build();
 
-        cookie.setMaxAge(24 * 60 * 60); // 1일 (초 단위)
-        cookie.setPath("/"); // 모든 경로에서 사용 가능
-        cookie.setHttpOnly(true); // 클라이언트에서 JS로 접근 불가
-        cookie.setSecure(false); // HTTPS 환경에서는 true로 설정 (배포 시 true)
-        cookie.setAttribute("SameSite", "None"); // CORS 허용
-
-        return cookie;
-
-
+        return cookie.toString();
     }
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
