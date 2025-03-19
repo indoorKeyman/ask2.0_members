@@ -79,6 +79,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshEntity(username, refresh, 86400000L);
 
         //응답 설정
+        response.setHeader("Access-Control-Expose-Headers", "access");
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
@@ -95,11 +96,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setDomain("localhost");
+//        cookie.setMaxAge(24*60*60);
+//        //cookie.setSecure(true);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//        cookie.setDomain("localhost");
+
+        cookie.setMaxAge(24 * 60 * 60); // 1일 (초 단위)
+        cookie.setPath("/"); // 모든 경로에서 사용 가능
+        cookie.setHttpOnly(true); // 클라이언트에서 JS로 접근 불가
+        cookie.setSecure(false); // HTTPS 환경에서는 true로 설정 (배포 시 true)
+        cookie.setAttribute("SameSite", "None"); // CORS 허용
 
         return cookie;
 
